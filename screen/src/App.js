@@ -24,7 +24,7 @@ function App() {
 
   const startGame = async () => {
     try {
-      const response = await fetch("http://localhost:8080/api/start-game", {
+      const response = await fetch("https://pots-of-gold-api.shuttleapp.rs/api/start-game", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -64,7 +64,7 @@ function App() {
   const computerMove = async () => {
     try {
       const [start, end] = edgeIndex;
-      const response = await fetch("http://localhost:8080/api/optimal-move", {
+      const response = await fetch("https://pots-of-gold-api.shuttleapp.rs/api/optimal-move", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
