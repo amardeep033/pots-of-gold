@@ -74,22 +74,21 @@ async fn optimal_move_handler(req: web::Json<GameRequest2>) -> impl Responder {
     HttpResponse::Ok().json(GameResponse2 { chosen_index })
 }
 
-#[actix_web::main]
-async fn main() -> std::io::Result<()> {
-    HttpServer::new(|| {
-        let cors = Cors::default()
-            .allowed_origin("http://localhost:3000")
-            .allowed_methods(vec!["GET", "POST"])
-            .allowed_headers(vec![header::AUTHORIZATION, header::ACCEPT])
-            .allowed_header(header::CONTENT_TYPE)
-            .max_age(3600);
+#[shuttle_runtime::main]
+async fn main() -> shuttle_actix_web::ShuttleActixWeb {
+    let cors = Cors::default()
+        .allowed_origin("https://pots-of-gold.vercel.app")
+        .allowed_methods(vec!["GET", "POST"])
+        .allowed_headers(vec![header::AUTHORIZATION, header::ACCEPT])
+        .allowed_header(header::CONTENT_TYPE)
+        .max_age(3600);
 
+    let factory = move || {
         App::new()
             .wrap(cors)
             .service(web::resource("/api/start-game").route(web::post().to(start_game)))
             .service(web::resource("/api/optimal-move").route(web::post().to(optimal_move_handler)))
-    })
-    .bind("127.0.0.1:8080")?
-    .run()
-    .await
+    };
+
+    Ok(HttpServer::new(factory).bind(("0.0.0.0", 8080))?)
 }
